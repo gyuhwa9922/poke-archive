@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Header from "./components/layout/Header";
 import Board from "./pages/Board";
 import DetailPost from "./pages/DetailPost";
 import Home from "./pages/Home";
@@ -9,6 +10,7 @@ import Pokedex from "./pages/Pokedex";
 function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/board" element={<Board />} />
