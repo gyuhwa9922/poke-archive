@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import Footer from "./components/layout/Footer";
 import Header from "./components/layout/Header";
 import Board from "./pages/Board";
 import DetailPost from "./pages/DetailPost";
@@ -19,6 +20,7 @@ function App() {
         <Route path="/myparty" element={<MyParty />} />
         <Route path="/pokedex" element={<Pokedex />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
