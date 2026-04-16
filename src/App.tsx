@@ -12,14 +12,16 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/board" element={<Board />} />
-        <Route path="/board/:id" element={<DetailPost />} />
-        <Route path="/mypage" element={<My />} />
-        <Route path="/myparty" element={<MyParty />} />
-        <Route path="/pokedex" element={<Pokedex />} />
-      </Routes>
+      <main className="max-w-360 mx-auto w-full">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/board" element={<Board />} />
+          <Route path="/board/:id" element={<DetailPost />} />
+          <Route path="/mypage" element={<My />} />
+          <Route path="/myparty" element={<MyParty />} />
+          <Route path="/pokedex" element={<Pokedex />} />
+        </Routes>
+      </main>
       <Footer />
     </BrowserRouter>
   );

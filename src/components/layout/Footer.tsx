@@ -7,10 +7,7 @@ const Footer = () => {
         background: "rgba(255, 255, 255, 0.65)",
       }}
     >
-      <div
-        className="w-full flex flex-col items-center text-center"
-        style={{ maxWidth: "1920px" }}
-      >
+      <div className="max-w-360 mx-auto w-full flex flex-col items-center text-center">
         <p
           style={{
             color: "#6a7282",

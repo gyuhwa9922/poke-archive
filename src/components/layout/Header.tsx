@@ -18,11 +18,8 @@ const Header = () => {
         background: "linear-gradient(90deg, #05b29f 0%, rgba(34, 169, 218, 0.4) 100%)",
       }}
     >
-      <div className="grid items-center" style={{ gridTemplateColumns: "1fr 10fr 1fr" }}>
-        <div
-          className="col-start-2 flex items-center justify-between h-16 w-full"
-          style={{ minWidth: "min(1024px, 100%)" }}
-        >
+      <div className="max-w-360 mx-auto w-full px-6 md:px-16 xl:px-28">
+        <div className="flex items-center justify-between h-16">
           {/* 로고 */}
           <NavLink
             to="/"
