@@ -1,2 +1,7 @@
-@import "tailwindcss";
 @import url('https://cdn.jsdelivr.net/npm/galmuri@latest/dist/galmuri.css');
+@import 'tailwindcss';
+
+body {
+  font-family: 'Galmuri11', sans-serif;
+  background: linear-gradient(180deg, #d4f0e2 0%, #f0fbf5 100%);
+}

@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { label: "포켓몬 도감", to: "/pokedex" },
-  { label: "게시판", to: "/board" },
-  { label: "내 파티 만들기", to: "/myparty" },
-  { label: "마이페이지", to: "/mypage" },
+  { label: '포켓몬 도감', to: '/pokedex' },
+  { label: '게시판', to: '/board' },
+  { label: '내 파티 만들기', to: '/myparty' },
+  { label: '마이페이지', to: '/mypage' },
 ];
 
 const Header = () => {
@@ -15,20 +15,13 @@ const Header = () => {
     <header
       className="w-full border-b border-gray-200 shadow-sm"
       style={{
-        background: "linear-gradient(90deg, #05b29f 0%, rgba(34, 169, 218, 0.4) 100%)",
+        background: 'linear-gradient(90deg, #05b29f 0%, rgba(34, 169, 218, 0.4) 100%)',
       }}
     >
-      <div className="grid items-center" style={{ gridTemplateColumns: "1fr 10fr 1fr" }}>
-        <div
-          className="col-start-2 flex items-center justify-between h-16 w-full"
-          style={{ minWidth: "min(1024px, 100%)" }}
-        >
+      <div style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 24px' }}>
+        <div className="flex items-center justify-between h-16 w-full">
           {/* 로고 */}
-          <NavLink
-            to="/"
-            className="flex items-center gap-2 font-bold text-white no-underline"
-            style={{ fontFamily: "Galmuri11" }}
-          >
+          <NavLink to="/" className="flex items-center gap-2 font-bold text-white no-underline">
             포켓아카이브
           </NavLink>
 
@@ -39,9 +32,8 @@ const Header = () => {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `text-sm no-underline ${isActive ? "text-white/40" : "text-white"}`
+                  `text-sm no-underline ${isActive ? 'text-white/40' : 'text-white'}`
                 }
-                style={{ fontFamily: "Galmuri11" }}
               >
                 {label}
               </NavLink>
@@ -54,10 +46,9 @@ const Header = () => {
             <button
               className="hidden md:block px-3.5 py-2 rounded-lg cursor-pointer border-none"
               style={{
-                background: "white",
-                color: "#05b29f",
-                fontFamily: "Galmuri11",
-                fontSize: "14px",
+                background: 'white',
+                color: '#05b29f',
+                fontSize: '14px',
               }}
             >
               로그인
@@ -71,11 +62,7 @@ const Header = () => {
                   stroke="white"
                   strokeWidth="1.6"
                 />
-                <path
-                  d="M17.49 17.49L13.91 13.91"
-                  stroke="white"
-                  strokeWidth="1.6"
-                />
+                <path d="M17.49 17.49L13.91 13.91" stroke="white" strokeWidth="1.6" />
               </svg>
             </button>
 
@@ -98,8 +85,8 @@ const Header = () => {
       <div
         className="fixed top-0 w-80 h-screen bg-white flex flex-col z-40 transition-all duration-300"
         style={{
-          right: sidebarOpen ? "0" : "-320px",
-          boxShadow: "0 25px 50px rgba(0,0,0,0.25)",
+          right: sidebarOpen ? '0' : '-320px',
+          boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
         }}
       >
         <div className="flex justify-between p-5 font-bold border-b border-gray-200">
@@ -134,7 +121,6 @@ const Header = () => {
               to={to}
               onClick={() => setSidebarOpen(false)}
               className="py-4 px-5 block no-underline text-[#333]"
-              style={{ fontFamily: "Galmuri11" }}
             >
               {label}
             </NavLink>
@@ -145,11 +131,7 @@ const Header = () => {
               alt="Login Icon"
               className="w-6 h-6 my-3 ml-3"
             />
-            <a
-              href="/login"
-              className="p-3 no-underline"
-              style={{ color: "#e7000b", fontFamily: "Galmuri11" }}
-            >
+            <a href="/login" className="p-3 no-underline" style={{ color: '#e7000b' }}>
               로그인
             </a>
           </div>
