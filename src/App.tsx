@@ -1,12 +1,12 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Footer from "./components/layout/Footer";
-import Header from "./components/layout/Header";
-import Board from "./pages/Board";
-import DetailPost from "./pages/DetailPost";
-import Home from "./pages/Home";
-import My from "./pages/My";
-import MyParty from "./pages/MyParty";
-import Pokedex from "./pages/Pokedex";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Footer from './components/layout/Footer';
+import Header from './components/layout/Header';
+import Board from './pages/Board';
+import DetailPost from './pages/DetailPost';
+import Home from './pages/Home';
+import MyPage from './pages/Mypage';
+import MyParty from './pages/MyParty';
+import Pokedex from './pages/Pokedex';
 
 function App() {
   return (
@@ -16,7 +16,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/board" element={<Board />} />
         <Route path="/board/:id" element={<DetailPost />} />
-        <Route path="/mypage" element={<My />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/myparty" element={<MyParty />} />
         <Route path="/pokedex" element={<Pokedex />} />
       </Routes>
