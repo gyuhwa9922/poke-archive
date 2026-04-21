@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import CategoryFilter from '../components/mypage/CategoryFilter';
+import Myinfo from '../components/mypage/Myinfo';
 
 const Mypage = () => {
   const [selected, setSelected] = useState('내 정보');
@@ -20,6 +21,13 @@ const Mypage = () => {
           <CategoryFilter selected={selected} onSelect={setSelected} />
 
           {/* 오른쪽 그리드: 선택된 카테고리에 따른 상세 정보 영역 */}
+          <Myinfo
+            user={{ nickname: 'test', loginId: 'test', introduce: '테스트 계정입니다' }}
+            postCount={1}
+            catchCount={44}
+          />
+          {/* <Myboard /> */}
+          {/* <MyPokemons /> */}
         </section>
       </div>
     </div>
