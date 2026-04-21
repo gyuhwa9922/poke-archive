@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import CategoryFilter from '../components/mypage/CategoryFilter';
 import Myinfo from '../components/mypage/Myinfo';
+import Myboard from '../components/mypage/Myboard';
+import MyPokemons from '../components/mypage/MyPokemons';
 
 const Mypage = () => {
   const [selected, setSelected] = useState('내 정보');
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex justify-center w-full h-250">
       <div className="w-full max-w-360 m-12 gap-3">
         {/* 페이지 타이틀 */}
         <div className="flex flex-col text-left">
@@ -21,13 +23,15 @@ const Mypage = () => {
           <CategoryFilter selected={selected} onSelect={setSelected} />
 
           {/* 오른쪽 그리드: 선택된 카테고리에 따른 상세 정보 영역 */}
-          <Myinfo
-            user={{ nickname: 'test', loginId: 'test', introduce: '테스트 계정입니다' }}
-            postCount={1}
-            catchCount={44}
-          />
-          {/* <Myboard /> */}
-          {/* <MyPokemons /> */}
+          {selected === '내 정보' && (
+            <Myinfo
+              user={{ nickname: 'test', loginId: 'test', introduce: '테스트 계정입니다' }}
+              postCount={1}
+              catchCount={44}
+            />
+          )}
+          {selected === '작성 게시글' && <Myboard />}
+          {selected === '내가 지닌 포켓몬' && <MyPokemons />}
         </section>
       </div>
     </div>
