@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { useAuthStore } from '../../store/authStore';
 
 const navItems = [
   { label: '포켓몬 도감', to: '/pokedex' },
@@ -11,17 +12,29 @@ const navItems = [
 const Header = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const { isLoggedIn, checkAuth } = useAuthStore();
+
+  const handleLogin = () => {
+    window.location.href = '/login';
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    alert('로그아웃 되었습니다.');
+    window.location.href = '/';
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   return (
-    <header
-      className="w-full border-b border-gray-200 shadow-sm"
-      style={{
-        background: 'linear-gradient(90deg, #05b29f 0%, rgba(34, 169, 218, 0.4) 100%)',
-      }}
-    >
-      <div style={{ maxWidth: '1440px', margin: '0 auto', width: '100%', padding: '0 24px' }}>
+    <header className="w-full border-b border-gray-200 shadow-sm bg-[linear-gradient(90deg,#05b29f_0%,rgba(34,169,218,0.4)_100%)]">
+      <div className="max-w-360 mx-auto w-full px-6">
         <div className="flex items-center justify-between h-16 w-full">
           {/* 로고 */}
           <NavLink to="/" className="flex items-center gap-2 font-bold text-white no-underline">
+            <img src="/assets/pokearchive.png" alt="pokearchive" className="h-15 w-auto" />
             포켓아카이브
           </NavLink>
 
@@ -43,17 +56,21 @@ const Header = () => {
           {/* 헤더 아이콘 영역 */}
           <div className="flex items-center gap-2.5">
             {/* PC 로그인 버튼 */}
-            <button
-              className="hidden md:block px-3.5 py-2 rounded-lg cursor-pointer border-none"
-              style={{
-                background: 'white',
-                color: '#05b29f',
-                fontSize: '14px',
-              }}
-            >
-              로그인
-            </button>
-
+            {isLoggedIn ? (
+              <button
+                className="hidden md:block px-3.5 py-2 rounded-lg cursor-pointer border-none bg-white text-[#05b29f] text-sm"
+                onClick={handleLogout}
+              >
+                로그아웃
+              </button>
+            ) : (
+              <button
+                className="hidden md:block px-3.5 py-2 rounded-lg cursor-pointer border-none bg-white text-[#05b29f] text-sm"
+                onClick={handleLogin}
+              >
+                로그인
+              </button>
+            )}
             {/* 검색 아이콘 (태블릿/모바일) */}
             <button className="md:hidden bg-transparent border-none cursor-pointer p-0">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -65,7 +82,6 @@ const Header = () => {
                 <path d="M17.49 17.49L13.91 13.91" stroke="white" strokeWidth="1.6" />
               </svg>
             </button>
-
             {/* 햄버거 메뉴 (태블릿/모바일) */}
             <button
               className="md:hidden bg-transparent border-none cursor-pointer p-0"
@@ -83,11 +99,7 @@ const Header = () => {
 
       {/* 사이드바 */}
       <div
-        className="fixed top-0 w-80 h-screen bg-white flex flex-col z-40 transition-all duration-300"
-        style={{
-          right: sidebarOpen ? '0' : '-320px',
-          boxShadow: '0 25px 50px rgba(0,0,0,0.25)',
-        }}
+        className={`fixed top-0 w-80 h-screen bg-white flex flex-col z-40 transition-all duration-300 shadow-[0_25px_50px_rgba(0,0,0,0.25)] ${sidebarOpen ? 'right-0' : '-right-80'}`}
       >
         <div className="flex justify-between p-5 font-bold border-b border-gray-200">
           <span>메뉴</span>
@@ -131,9 +143,15 @@ const Header = () => {
               alt="Login Icon"
               className="w-6 h-6 my-3 ml-3"
             />
-            <a href="/login" className="p-3 no-underline" style={{ color: '#e7000b' }}>
-              로그인
-            </a>
+            {isLoggedIn ? (
+              <button onClick={handleLogout} className="p-3 no-underline text-[#e7000b]">
+                로그아웃
+              </button>
+            ) : (
+              <a href="/login" className="p-3 no-underline text-[#e7000b]">
+                로그인
+              </a>
+            )}
           </div>
         </nav>
       </div>
