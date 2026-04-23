@@ -19,6 +19,10 @@ const Login = () => {
     }
   };
 
+  const handleRegisterRedirect = () => {
+    window.location.href = '/register';
+  };
+
   return (
     <main className="w-screen min-h-250 flex flex-col items-center justify-center gap-5 bg-[linear-gradient(135deg,#FEF2F2_0%,#FFF_50%,#FFF7ED_100%)]">
       {/* icon & header */}
@@ -118,6 +122,7 @@ const Login = () => {
             <p className="text-[#8a9a98] m-0">계정이 없으신가요?</p>
             <button
               type="button"
+              onClick={handleRegisterRedirect}
               className="bg-transparent border-0 text-[#00BBA7] hover:text-[#009e8d] text-sm underline cursor-pointer p-0"
             >
               회원가입

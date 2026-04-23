@@ -1,14 +1,14 @@
-import instance from './axios';
+import instance, { publicInstance } from './axios';
 
 // –– Type Definitions –––––––––––––––––––––––––––
-// API 응답 타입 정의
+// API response type definition
 interface ApiResponse<T> {
   success: boolean;
   message: string;
   data: T;
 }
 
-// User 타입 정의
+// User type definition
 export interface User {
   userId: number;
   loginId: string;
@@ -18,10 +18,26 @@ export interface User {
   createdAt: string;
 }
 
-// 로그인 응답 타입 정의
+// Define login response type
 interface LoginResponse {
   token: string;
   user: User;
+}
+
+// Define duplicate confirmation response type
+interface ApiCheckResponse {
+  success: boolean;
+  data: { exists: boolean };
+}
+
+export interface CheckResponse {
+  exists: boolean;
+}
+
+// Duplicate check UI state type
+export interface CheckResult {
+  text: string;
+  ok: boolean;
 }
 
 // –– Auth API ––––––––––––––––––––––––––––––––––––
@@ -36,21 +52,27 @@ export async function login(loginId: string, password: string): Promise<LoginRes
 }
 
 // REGISTER
-export async function register(loginId: string, nickname: string, password: string) {
-  const { data } = await instance.post('/user/register', { loginId, nickname, password });
-  return data;
+export async function register(loginId: string, nickname: string, password: string): Promise<LoginResponse> {
+  const { data } = await instance.post<ApiResponse<LoginResponse>>('/user/register', { loginId, nickname, password });
+  return data.data;
 }
 
 // NICKNAME CHECK
-export async function checkNickname(nickname: string) {
-  const { data } = await instance.get(`/user/check?nickname=${nickname}`);
-  return data;
+export async function checkNickname(nickname: string): Promise<CheckResponse> {
+  const { data } = await publicInstance.get<ApiCheckResponse>('/user/check-nickname', {
+    params: { nickname, _t: Date.now() },
+  });
+  const exists = data?.data?.exists ?? (data as unknown as CheckResponse)?.exists ?? false;
+  return { exists };
 }
 
 // ID CHECK
-export async function checkLoginId(loginId: string) {
-  const { data } = await instance.get(`/user/check?loginId=${loginId}`);
-  return data;
+export async function checkLoginId(loginId: string): Promise<CheckResponse> {
+  const { data } = await publicInstance.get<ApiCheckResponse>('/user/check-login-id', {
+    params: { loginId, _t: Date.now() },
+  });
+  const exists = data?.data?.exists ?? (data as unknown as CheckResponse)?.exists ?? false;
+  return { exists };
 }
 
 // –– User API ––––––––––––––––––––––––––––––––––––
