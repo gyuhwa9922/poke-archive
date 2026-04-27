@@ -1,3 +1,4 @@
+//서버->화면용
 export const categoryMap = {
   free: '자유게시판',
   guide: '질문게시판',
@@ -5,6 +6,7 @@ export const categoryMap = {
   party: '파티공유',
 };
 
+//화면 ->서버값?
 export const reverseCategoryMap = {
   자유게시판: 'free',
   질문게시판: 'guide',
@@ -12,6 +14,7 @@ export const reverseCategoryMap = {
   파티공유: 'party',
 };
 
+//카테고리 컬러 및 스타일
 export const categoryColors: Record<string, { text: string; bg: string; border: string }> = {
   전체:      { text: 'text-slate-600',   bg: 'bg-slate-100', border: 'border-slate-300' },
   자유게시판: { text: 'text-[#00bba7]',  bg: 'bg-[#e6f7f5]', border: 'border-[#00bba7]/40' },
