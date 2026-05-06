@@ -1,4 +1,8 @@
-export const K_TYPE = {
+export const STAT_MAP: Record<string, string> = {
+  hp: "HP", attack: "공격", defense: "방어", speed: "스피드",
+};
+
+export const K_TYPE: Record<string, string> = {
   NORMAL: '노말',
   FIRE: '불꽃',
   WATER: '물',
