@@ -9,6 +9,7 @@ import MyParty from './pages/MyParty';
 import Pokedex from './pages/Pokedex';
 import Login from './components/layout/Login';
 import Register from './components/layout/Register';
+import WritePost from './pages/WritePost';
 
 function App() {
   return (
@@ -23,6 +24,9 @@ function App() {
         <Route path="/pokedex" element={<Pokedex />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        <Route path="/write-post" element={<WritePost />} />
+        <Route path="/write-post/:id" element={<WritePost />} />
       </Routes>
       <Footer />
     </BrowserRouter>
