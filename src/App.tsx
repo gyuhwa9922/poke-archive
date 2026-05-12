@@ -10,6 +10,7 @@ import Pokedex from './pages/Pokedex';
 import Login from './components/layout/Login';
 import Register from './components/layout/Register';
 import WritePost from './pages/WritePost';
+import CustomModal from './components/layout/CustomModal';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/write-post/:id" element={<WritePost />} />
       </Routes>
       <Footer />
+      <CustomModal />
     </BrowserRouter>
   );
 }

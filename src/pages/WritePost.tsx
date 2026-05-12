@@ -11,6 +11,7 @@ import {
 } from '../api/post';
 import { reverseCategoryMap, categoryMap } from '../utils/boardConstants';
 import { usePostWriteStore } from '../store/postWriteStore';
+import { showModal } from '../store/modalStore';
 
 type ScreenCategory = keyof typeof reverseCategoryMap;
 
@@ -77,7 +78,7 @@ const WritePost = () => {
         }
       } catch (error) {
         console.error(error);
-        alert('게시글 정보를 불러오는 중 오류가 발생했습니다.');
+        await showModal('오류', '게시글 정보를 불러오는 중 오류가 발생했습니다.', 'danger');
         navigate('/board');
       }
     };
@@ -111,17 +112,17 @@ const WritePost = () => {
 
   const validateForm = () => {
     if (!category) {
-      alert('카테고리를 선택해주세요.');
+      showModal('오류', '카테고리를 선택해주세요.', 'danger');
       return false;
     }
 
     if (!title.trim()) {
-      alert('제목을 입력해주세요.');
+      showModal('오류', '제목을 입력해주세요.', 'danger');
       return false;
     }
 
     if (!content.trim()) {
-      alert('내용을 입력해주세요.');
+      showModal('오류', '내용을 입력해주세요.', 'danger');
       return false;
     }
 
@@ -138,7 +139,7 @@ const WritePost = () => {
       setImgUrl(imageUrl);
     } catch (error) {
       console.error(error);
-      alert('이미지 업로드 중 오류가 발생했습니다.');
+      await showModal('오류', '이미지 업로드 중 오류가 발생했습니다.', 'danger');
     }
   };
 
@@ -158,12 +159,12 @@ const WritePost = () => {
         imgUrl,
       });
 
-      alert('임시 저장이 완료되었습니다.');
+      await showModal('성공', '임시 저장이 완료되었습니다.', 'default');
       resetForm();
       navigate('/board');
     } catch (error) {
       console.error(error);
-      alert('임시 저장 중 오류가 발생했습니다.');
+      await showModal('오류', '임시 저장 중 오류가 발생했습니다.', 'danger');
     } finally {
       setIsSubmitting(false);
     }
@@ -189,12 +190,12 @@ const WritePost = () => {
         await publishPost(createdPost.postId);
       }
 
-      alert('게시글이 등록되었습니다.');
+      await showModal('성공', '게시글이 등록되었습니다.','default');
       resetForm();
       navigate('/board');
     } catch (error) {
       console.error(error);
-      alert('게시글 작성 중 오류가 발생했습니다.');
+      await showModal('오류', '게시글 작성 중 오류가 발생했습니다.', 'danger');
     } finally {
       setIsSubmitting(false);
     }
@@ -217,12 +218,12 @@ const WritePost = () => {
         imgUrl,
       });
 
-      alert('게시글이 수정되었습니다.');
+      await showModal('성공', '게시글이 수정되었습니다.', 'default');
       resetForm();
       navigate(`/board/${id}`);
     } catch (error) {
       console.error(error);
-      alert('게시글 수정 중 오류가 발생했습니다.');
+      await showModal('오류', '게시글 수정 중 오류가 발생했습니다.', 'danger');
     } finally {
       setIsSubmitting(false);
     }
