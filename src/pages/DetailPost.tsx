@@ -55,6 +55,7 @@ async function fetchSprites(ids: number[]): Promise<SpriteMap> {
 
   const resultMap: SpriteMap = {};
 
+  //post.preset.pocketmons에 들어있는 포켓몬 ID 배열을 받아서, 포켓몬 이미지
   const results = await Promise.allSettled(
     ids.map(async (id) => {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
@@ -67,7 +68,7 @@ async function fetchSprites(ids: number[]): Promise<SpriteMap> {
           data.sprites?.front_default ||
           '',
       };
-    }),
+    })
   );
 
   results.forEach((result) => {
@@ -106,10 +107,7 @@ const DetailPost = () => {
     try {
       setIsLoading(true);
 
-      const [postData, commentData] = await Promise.all([
-        getPostDetail(id),
-        getPostComments(id),
-      ]);
+      const [postData, commentData] = await Promise.all([getPostDetail(id), getPostComments(id)]);
 
       setPost(postData);
       setComments(commentData);
@@ -285,8 +283,7 @@ const DetailPost = () => {
     );
   }
 
-  const screenCategory =
-    categoryMap[post.category as keyof typeof categoryMap] ?? post.category;
+  const screenCategory = categoryMap[post.category as keyof typeof categoryMap] ?? post.category;
 
   const badgeColor = categoryColors[screenCategory] ?? {
     text: 'text-gray-500',
@@ -305,9 +302,7 @@ const DetailPost = () => {
             onClick={() => navigate('/board')}
             className="group flex items-center gap-2 rounded-full bg-gray-50 px-4 py-2 text-sm font-bold text-gray-500 transition-all hover:bg-[#05B29F]/10 hover:text-[#05B29F]"
           >
-            <span className="transform transition-transform group-hover:-translate-x-1">
-              ←
-            </span>
+            <span className="transform transition-transform group-hover:-translate-x-1">←</span>
             목록으로 돌아가기
           </button>
 
@@ -347,9 +342,7 @@ const DetailPost = () => {
 
             <div className="flex w-full flex-col items-start justify-between gap-2 text-sm text-gray-400 sm:flex-row sm:items-center">
               <div className="flex items-center gap-4">
-                <span className="text-[16px] font-bold text-gray-700">
-                  {post.nickname}
-                </span>
+                <span className="text-[16px] font-bold text-gray-700">{post.nickname}</span>
                 <span className="text-gray-200">|</span>
                 <span className="font-medium">
                   {post.createdAt ? formatDate(post.createdAt) : ''}
@@ -372,11 +365,7 @@ const DetailPost = () => {
 
             {post.imgUrl && (
               <div className="mb-14 w-full overflow-hidden rounded-3xl border border-gray-100 md:rounded-[32px]">
-                <img
-                  src={post.imgUrl}
-                  alt="게시글 이미지"
-                  className="block h-auto w-full"
-                />
+                <img src={post.imgUrl} alt="게시글 이미지" className="block h-auto w-full" />
               </div>
             )}
           </div>
@@ -388,7 +377,7 @@ const DetailPost = () => {
                   {post.preset.deckname}
                 </p>
               )}
-
+              {/* 트레이너 카드 이미지 */}
               <div className="relative w-full overflow-hidden rounded-xl">
                 <img
                   src={
@@ -433,25 +422,19 @@ const DetailPost = () => {
             className="flex h-[60px] w-full flex-1 items-center justify-center gap-3 rounded-lg border border-[#D1D5DC] bg-white transition-all hover:bg-gray-50 active:scale-[0.98]"
           >
             <span className="text-2xl leading-none">{isLiked ? '❤️' : '🤍'}</span>
-            <span className="text-[18px] font-black text-[#1a3a35]">
-              {favoriteCount}
-            </span>
+            <span className="text-[18px] font-black text-[#1a3a35]">{favoriteCount}</span>
           </button>
         </section>
 
         <section className="rounded-2xl bg-white px-6 py-8 shadow md:px-10">
           <h3 className="mb-8 text-lg font-black text-gray-900 md:text-xl">
-            댓글{' '}
-            <span className="ml-1 font-medium text-gray-400">
-              {comments.length}
-            </span>
+            댓글 <span className="ml-1 font-medium text-gray-400">{comments.length}</span>
           </h3>
 
           <div className="mb-10 flex flex-col gap-2">
             {comments.length > 0 ? (
               comments.map((comment) => {
-                const isMyComment =
-                  String(comment.userId) === String(currentUserId);
+                const isMyComment = String(comment.userId) === String(currentUserId);
                 const isEditing = editingCommentId === comment.commentId;
 
                 return (
@@ -477,10 +460,7 @@ const DetailPost = () => {
                                   <button
                                     type="button"
                                     onClick={() =>
-                                      handleSaveEditComment(
-                                        comment.commentId,
-                                        comment.content,
-                                      )
+                                      handleSaveEditComment(comment.commentId, comment.content)
                                     }
                                     className="text-[11px] font-bold text-[#05B29F]"
                                   >
@@ -505,9 +485,7 @@ const DetailPost = () => {
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() =>
-                                      handleDeleteComment(comment.commentId)
-                                    }
+                                    onClick={() => handleDeleteComment(comment.commentId)}
                                     className="text-[11px] font-bold text-gray-400 transition-colors hover:text-red-500"
                                   >
                                     삭제
@@ -536,9 +514,7 @@ const DetailPost = () => {
                 );
               })
             ) : (
-              <p className="py-10 text-center text-gray-400">
-                아직 댓글이 없습니다.
-              </p>
+              <p className="py-10 text-center text-gray-400">아직 댓글이 없습니다.</p>
             )}
           </div>
 

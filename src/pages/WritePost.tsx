@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   createPost,
@@ -28,6 +28,7 @@ const WritePost = () => {
     presetId,
     imgUrl,
     presets,
+    originalPreset,
     isSubmitting,
     setTitle,
     setCategory,
@@ -35,17 +36,19 @@ const WritePost = () => {
     setPresetId,
     setImgUrl,
     setPresets,
+    setOriginalPreset,
     setIsSubmitting,
     resetForm,
   } = usePostWriteStore();
 
   const isEditMode = Boolean(id);
+  const originalPresetRef = useRef<PostPresetPayload | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
 
     if (!token || token === 'undefined') {
-      alert('로그인이 필요한 서비스입니다.');
+      showModal('비로그인 상태', '로그인이 필요한 서비스입니다.', 'danger');
       navigate('/login');
       return;
     }
@@ -74,7 +77,19 @@ const WritePost = () => {
         }
 
         if (post.preset) {
+          const keepPreset: PostPresetPayload = {
+            deckname: post.preset.deckname,
+            pocketmons: post.preset.pocketmons,
+            gender: post.preset.gender,
+          };
+
+          originalPresetRef.current = keepPreset;
+          setOriginalPreset(keepPreset);
           setPresetId('default');
+        } else {
+          originalPresetRef.current = null;
+          setOriginalPreset(null);
+          setPresetId('');
         }
       } catch (error) {
         console.error(error);
@@ -93,15 +108,27 @@ const WritePost = () => {
     setImgUrl,
     setPresetId,
     setPresets,
+    setOriginalPreset,
     setTitle,
   ]);
 
   const getSelectedPresetPayload = (): PostPresetPayload | null => {
-    if (!presetId) return null;
+    // 수정 모드에서 기존 파티 유지
+    if (presetId === 'default') {
+      return originalPreset ?? originalPresetRef.current;
+    }
 
+    // 프리셋 선택 안 함
+    if (!presetId) {
+      return null;
+    }
+
+    // 새 프리셋 선택
     const selectedPreset = presets.find((preset) => preset.partyId === Number(presetId));
 
-    if (!selectedPreset) return null;
+    if (!selectedPreset) {
+      return null;
+    }
 
     return {
       deckname: selectedPreset.deckname,
@@ -190,7 +217,7 @@ const WritePost = () => {
         await publishPost(createdPost.postId);
       }
 
-      await showModal('성공', '게시글이 등록되었습니다.','default');
+      await showModal('성공', '게시글이 등록되었습니다.', 'default');
       resetForm();
       navigate('/board');
     } catch (error) {
@@ -210,11 +237,22 @@ const WritePost = () => {
     try {
       const apiCategory = reverseCategoryMap[category as ScreenCategory];
 
+      const presetPayload = getSelectedPresetPayload();
+
+      if (presetId === 'default' && !presetPayload) {
+        await showModal(
+          '프리셋 유지 실패',
+          '기존 프리셋 정보를 찾지 못했습니다. 프리셋을 다시 선택해주세요.',
+          'danger'
+        );
+        return;
+      }
+
       await updatePost(id, {
         title: title.trim(),
         category: apiCategory,
         content: content.trim(),
-        preset: getSelectedPresetPayload(),
+        preset: presetPayload,
         imgUrl,
       });
 
@@ -285,9 +323,7 @@ const WritePost = () => {
                 className="w-full h-11 px-3 rounded-lg border border-[#D1D5DC] text-sm text-[#1a3a35] bg-white outline-none cursor-pointer focus:border-[#05B29F]"
               >
                 <option value="">프리셋을 선택하세요</option>
-                {isEditMode && presetId === 'default' && (
-                  <option value="default">기존 파티</option>
-                )}
+                {isEditMode && presetId === 'default' && <option value="default">기존 파티</option>}
                 {presets.map((preset) => (
                   <option key={preset.partyId} value={preset.partyId}>
                     {preset.deckname || `프리셋 ${preset.partyId}`}

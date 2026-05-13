@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { PartyPreset } from '../api/post';
+import type { PartyPreset, PostPresetPayload } from '../api/post';
 
 interface PostWriteState {
   title: string;
@@ -8,6 +8,7 @@ interface PostWriteState {
   presetId: string;
   imgUrl: string;
   presets: PartyPreset[];
+  originalPreset: PostPresetPayload | null;
   isSubmitting: boolean;
 
   setTitle: (title: string) => void;
@@ -16,6 +17,7 @@ interface PostWriteState {
   setPresetId: (presetId: string) => void;
   setImgUrl: (imgUrl: string) => void;
   setPresets: (presets: PartyPreset[]) => void;
+  setOriginalPreset: (preset: PostPresetPayload | null) => void;
   setIsSubmitting: (isSubmitting: boolean) => void;
 
   resetForm: () => void;
@@ -28,6 +30,7 @@ export const usePostWriteStore = create<PostWriteState>((set) => ({
   presetId: '',
   imgUrl: '',
   presets: [],
+  originalPreset: null,
   isSubmitting: false,
 
   setTitle: (title) => set({ title }),
@@ -36,6 +39,7 @@ export const usePostWriteStore = create<PostWriteState>((set) => ({
   setPresetId: (presetId) => set({ presetId }),
   setImgUrl: (imgUrl) => set({ imgUrl }),
   setPresets: (presets) => set({ presets }),
+  setOriginalPreset: (originalPreset) => set({ originalPreset }),
   setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
 
   resetForm: () =>
@@ -46,6 +50,7 @@ export const usePostWriteStore = create<PostWriteState>((set) => ({
       presetId: '',
       imgUrl: '',
       presets: [],
+      originalPreset: null,
       isSubmitting: false,
     }),
 }));
