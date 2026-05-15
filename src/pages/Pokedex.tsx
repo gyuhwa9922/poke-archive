@@ -2,23 +2,21 @@ import { useEffect, useState } from 'react';
 import SideBar from '../components/poket/SideBar';
 import PocketCard from '../components/poket/PocketCard';
 import PocketDetailModal from '../components/poket/PocketDetailModal';
-import { fetchMyPocketMons, poketmonReg, poketmonDelete } from '../api/poket';
+import { usePoketStore } from '../store/poketStore';
 const PAGE_SIZE = 12;
 
 const Pokedex = () => {
+  const { bookmarkedIds, fetchBookmarkedIds, addBookmark, removeBookmark } = usePoketStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedNo, setSelectedNo] = useState<number | null>(null);
   const [filteredNos, setFilteredNos] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageInput, setPageInput] = useState('');
-  const [myPocketMons, setMyPocketMons] = useState<number[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token && token !== 'undefined') {
-      fetchMyPocketMons().then(setMyPocketMons);
-    }
+    fetchBookmarkedIds();
   }, []);
+
   const totalPages = Math.ceil(filteredNos.length / PAGE_SIZE);
   const displayNos = filteredNos.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
   //사이드바 이름 검색하면 작동하는 함수
@@ -30,16 +28,6 @@ const Pokedex = () => {
   const detailPoketSelect = (no: number) => {
     setSelectedNo(no);
     setModalOpen(true);
-  };
-  // 포켓몬 포획 함수
-  const poketRegister = async (no: number) => {
-    const ok = await poketmonReg(no);
-    if (ok) setMyPocketMons((prev) => [...prev, no]);
-  };
-  // 포켓몬 포획한거 삭제하는 함수
-  const poketDelete = async (no: number) => {
-    const ok = await poketmonDelete(no);
-    if (ok) setMyPocketMons((prev) => prev.filter((id) => id !== no));
   };
   //pagenation 함수
   const pagenation = () => {
@@ -69,10 +57,10 @@ const Pokedex = () => {
                 <PocketCard
                   key={no}
                   no={no}
-                  myPocketMons={myPocketMons}
+                  myPocketMons={bookmarkedIds}
                   onClick={detailPoketSelect}
-                  onRegister={poketRegister}
-                  onDelete={poketDelete}
+                  onRegister={addBookmark}
+                  onDelete={removeBookmark}
                 />
               ))}
             </div>

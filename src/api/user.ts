@@ -29,7 +29,6 @@ interface ApiCheckResponse {
   success: boolean;
   data: { exists: boolean };
 }
-
 export interface CheckResponse {
   exists: boolean;
 }
@@ -52,8 +51,16 @@ export async function login(loginId: string, password: string): Promise<LoginRes
 }
 
 // REGISTER
-export async function register(loginId: string, nickname: string, password: string): Promise<LoginResponse> {
-  const { data } = await instance.post<ApiResponse<LoginResponse>>('/user/register', { loginId, nickname, password });
+export async function register(
+  loginId: string,
+  nickname: string,
+  password: string
+): Promise<LoginResponse> {
+  const { data } = await instance.post<ApiResponse<LoginResponse>>('/user/register', {
+    loginId,
+    nickname,
+    password,
+  });
   return data.data;
 }
 
@@ -94,3 +101,4 @@ export async function withdraw(password: string) {
   const { data } = await instance.post('/user/withdraw', { password });
   return data;
 }
+
