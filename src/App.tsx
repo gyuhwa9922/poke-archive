@@ -3,7 +3,6 @@ import Footer from './components/layout/Footer';
 import Header from './components/layout/Header';
 import Board from './pages/Board';
 import DetailPost from './pages/DetailPost';
-import Home from './pages/Home';
 import MyPage from './pages/Mypage';
 import MyParty from './pages/MyParty';
 import Pokedex from './pages/Pokedex';
@@ -17,12 +16,11 @@ function App() {
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Pokedex />} />
         <Route path="/board" element={<Board />} />
         <Route path="/board/:id" element={<DetailPost />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/myparty" element={<MyParty />} />
-        <Route path="/pokedex" element={<Pokedex />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 

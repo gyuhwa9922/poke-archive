@@ -33,3 +33,16 @@ export interface Stat {
   value: number;
   color: string;
 }
+
+export interface PartyPokemon extends PokemonDetail {
+  name: string;
+  koName: string;
+}
+
+export interface PartyPreset {
+  apiId: number;
+  name: string;
+  gender: string;
+  pokemonIds: number[];
+  party: (PartyPokemon | null)[];
+}

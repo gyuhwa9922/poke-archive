@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 
 const navItems = [
-  { label: '포켓몬 도감', to: '/pokedex' },
+  { label: '포켓몬 도감', to: '/' },
   { label: '게시판', to: '/board' },
   { label: '내 파티 만들기', to: '/myparty' },
   { label: '마이페이지', to: '/mypage' },
@@ -20,6 +20,7 @@ const Header = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    //모달
     alert('로그아웃 되었습니다.');
     window.location.href = '/';
   };
