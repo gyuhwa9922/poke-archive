@@ -1,5 +1,7 @@
 import { register, checkLoginId, checkNickname, type CheckResult } from '../api/user';
 import { useState } from 'react';
+import { showModal } from '../store/modalStore';
+import { useNavigate } from 'react-router-dom';
 
 // Custom hook that manages membership registration logic
 export function useRegister() {
@@ -14,6 +16,7 @@ export function useRegister() {
   const [idCheckResult, setIdCheckResult] = useState<CheckResult | null>(null);
   const [nicknameCheckResult, setNicknameCheckResult] = useState<CheckResult | null>(null);
 
+  const nav = useNavigate();
   // Reset duplicate check results when entering login ID and nickname
   const setLoginId = (v: string) => {
     setLoginIdRaw(v.replace(/[^a-zA-Z0-9_]/g, ''));
@@ -115,17 +118,21 @@ export function useRegister() {
     try {
       const data = await register(loginId, nickname, password);
       localStorage.setItem('token', data.token);
-      alert('회원가입 성공! 메인페이지로 이동합니다.');
-      window.location.href = '/';
+      showModal('회원가입 성공!', '메인페이지로 이동합니다');
+      // alert('회원가입 성공! 메인페이지로 이동합니다.');
+      nav('/', { replace: true });
+      // window.location.href = '/';
     } catch (error) {
       console.error('회원가입 실패:', error);
-      alert('회원가입에 실패했습니다. 입력한 정보를 확인해주세요.');
+      // alert('회원가입에 실패했습니다. 입력한 정보를 확인해주세요.');
+      showModal('회원가입 실패', '입력한 정보를 확인해주세요.');
     }
   };
 
   // Function to go to the login page
   const handleLoginRedirect = () => {
-    window.location.href = '/login';
+    // window.location.href = '/login';
+    nav('login', { replace: true });
   };
 
   // Return the state and functions to be returned from the hook in object form.

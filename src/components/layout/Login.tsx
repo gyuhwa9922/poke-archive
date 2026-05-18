@@ -1,26 +1,32 @@
 import { useState } from 'react';
 import { login } from '../../api/user';
+import { useNavigate } from 'react-router-dom';
+import { showModal } from '../../store/modalStore';
 
 const Login = () => {
   const [LoginId, setLoginId] = useState('');
   const [Password, setPassword] = useState('');
-
+  const nav = useNavigate();
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
       const data = await login(LoginId, Password);
       localStorage.setItem('token', data.token);
-      alert('로그인 성공!');
-      window.location.href = '/';
+      // alert('로그인 성공!');
+      showModal('로그인 성공!', '로그인에 성공하였습니다!');
+      // window.location.href = '/';
+      nav('/', { replace: true });
     } catch (error) {
       console.error('로그인 실패:', error);
-      alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+      // alert('로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.');
+      showModal('로그인에 실패했습니다', '아이디와 비밀번호를 확인해주세요');
     }
   };
 
   const handleRegisterRedirect = () => {
-    window.location.href = '/register';
+    // window.location.href = '/register';
+    nav('/register');
   };
 
   return (
