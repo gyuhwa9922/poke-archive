@@ -8,6 +8,7 @@ import PresetList from '../components/myparty/PresetList';
 import { useMyPartyStore } from '../store/myPartyStore';
 import { usePoketStore } from '../store/poketStore';
 import { useAuthStore } from '../store/authStore';
+import { showModal, showConfirm, showPrompt } from '../store/modalStore';
 
 const MyParty = () => {
   const navigate = useNavigate();
@@ -33,7 +34,6 @@ const MyParty = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const savingRef = useRef(false);
-
   // useEffect(() => {
   //   const token = localStorage.getItem('token');
   //   if (!token || token === 'undefined') {
@@ -62,7 +62,8 @@ const MyParty = () => {
   function handlePokemonClick(pokemon: PartyPokemon) {
     if (selectedSlot === null) {
       //모달
-      alert('먼저 트레이너 카드의 슬롯을 선택해주세요.');
+      // alert('먼저 트레이너 카드의 슬롯을 선택해주세요.');
+      showModal('트레이너 카드 슬롯 미선택', '먼저 트레이너 카드의 슬롯을 선택해주세요.');
       return;
     }
     const next = [...party];
@@ -85,7 +86,8 @@ const MyParty = () => {
     const ok = await removeBookmark(id);
     if (!ok) {
       //모달
-      alert('북마크 삭제에 실패했습니다.');
+      // alert('북마크 삭제에 실패했습니다.');
+      showModal('삭제 실패', '북마크 삭제에 실패했습니다.');
       return;
     }
     removePokemon(id);
@@ -101,12 +103,14 @@ const MyParty = () => {
     if (savingRef.current) return;
     if (party.filter(Boolean).length === 0) {
       //모달
-      alert('포켓몬을 하나 이상 선택해주세요.');
+      // alert('포켓몬을 하나 이상 선택해주세요.');
+      showModal('포켓몬 미선택', '포켓몬을 하나 이상 선택해주세요.');
       return;
     }
     if (loadedPresetIndex === null) {
       //모달
-      alert('저장할 슬롯을 선택해주세요.');
+      // alert('저장할 슬롯을 선택해주세요.');
+      showModal('저장할 슬롯 미선택', '저장할 슬롯을 선택해주세요.');
       return;
     }
 
@@ -116,7 +120,11 @@ const MyParty = () => {
       const pokemonIds = party.filter(Boolean).map((p) => p!.id);
 
       if (preset) {
-        const ok = window.confirm(`"${preset.name}" 파티에 현재 구성을 덮어씁니다.`);
+        const ok = await showConfirm(
+          '파티 덮어쓰기',
+          `"${preset.name}" 파티에 현재 구성을 덮어씁니다.`
+        );
+        // window.confirm(`"${preset.name}" 파티에 현재 구성을 덮어씁니다.`);
         if (ok) {
           await putPartyPreset(preset.apiId, preset.name, pokemonIds, gender);
           await refreshPresets();
@@ -124,10 +132,12 @@ const MyParty = () => {
       } else {
         if (presets.length >= 3) {
           //모달
-          alert('파티는 최대 3개까지 저장할 수 있습니다.');
+          showModal('저장 공간 부족', '파티는 최대 3개까지 저장할 수 있습니다.');
+          // alert('파티는 최대 3개까지 저장할 수 있습니다.');
           return;
         }
-        const name = window.prompt('나만의 파티 이름을 입력해주세요');
+        const name = await showPrompt('파티 이름 저장', '나만의 파티 이름을 입력해주세요');
+        // window.prompt('나만의 파티 이름을 입력해주세요');
         if (name) {
           await postPartyPreset(name, pokemonIds, gender);
           await refreshPresets();
@@ -135,7 +145,8 @@ const MyParty = () => {
       }
     } catch {
       //모달
-      alert('파티 저장에 실패했습니다.');
+      // alert('파티 저장에 실패했습니다.');
+      showModal('파티 저장 실패', '파티 저장에 실패했습니다.');
     } finally {
       savingRef.current = false;
     }
@@ -159,7 +170,8 @@ const MyParty = () => {
       await refreshPresets();
     } catch {
       //모달
-      alert('파티 삭제에 실패했습니다.');
+      // alert('파티 삭제에 실패했습니다.');
+      showModal('파티 삭제 실패', '파티 삭제에 실패했습니다.');
     }
   }
 
