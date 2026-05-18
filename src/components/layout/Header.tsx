@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
+import { showModal } from '../../store/modalStore';
 
 const navItems = [
   { label: '포켓몬 도감', to: '/' },
@@ -10,19 +11,24 @@ const navItems = [
 ];
 
 const Header = () => {
+  const nav = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const { isLoggedIn, checkAuth } = useAuthStore();
+  const { isLoggedIn, checkAuth, setLoggedOut } = useAuthStore();
 
   const handleLogin = () => {
-    window.location.href = '/login';
+    // window.location.href = '/login';
+    nav('/login');
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    setLoggedOut();
     //모달
-    alert('로그아웃 되었습니다.');
-    window.location.href = '/';
+    // alert('로그아웃 되었습니다.');
+    showModal('로그아웃', '로그아웃 되었습니다.');
+    // window.location.href = '/';
+    nav('/login', { replace: true });
   };
 
   useEffect(() => {

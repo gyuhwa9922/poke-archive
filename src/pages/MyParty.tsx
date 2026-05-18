@@ -47,6 +47,7 @@ const MyParty = () => {
 
   useEffect(() => {
     if (authChecked && !isLoggedIn) {
+      showModal('비로그인 상태', '나의 파티 만들기 페이지는 로그인 후 이용 가능합니다.');
       navigate('/login');
     }
   }, [authChecked, isLoggedIn, navigate]);
