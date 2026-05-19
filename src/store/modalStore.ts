@@ -10,6 +10,7 @@ interface OpenModalOptions {
   desc: string;
   modalType: ModalType;
   colorType?: ColorType;
+  inputType?: string;
 }
 
 interface ModalState {
@@ -18,6 +19,7 @@ interface ModalState {
   desc: string;
   modalType: ModalType;
   colorType: ColorType;
+  inputType: string;
   inputValue: string;
   resolver: ((value: ModalResult) => void) | null;
 
@@ -34,6 +36,7 @@ const initialModalState = {
   desc: '',
   modalType: 'alert' as ModalType,
   colorType: 'default' as ColorType,
+  inputType: 'text',
   inputValue: '',
   resolver: null,
 };
@@ -41,7 +44,7 @@ const initialModalState = {
 export const useModalStore = create<ModalState>((set, get) => ({
   ...initialModalState,
 
-  openModal: ({ title, desc, modalType, colorType = 'default' }) => {
+  openModal: ({ title, desc, modalType, colorType = 'default', inputType = 'text' }) => {
     return new Promise<ModalResult>((resolve) => {
       set({
         isOpen: true,
@@ -49,6 +52,7 @@ export const useModalStore = create<ModalState>((set, get) => ({
         desc,
         modalType,
         colorType,
+        inputType,
         inputValue: '',
         resolver: resolve,
       });
@@ -121,7 +125,7 @@ export function showConfirm(title: string, desc: string): Promise<boolean> {
 }
 
 // 입력 모달
-export function showPrompt(title: string, desc: string): Promise<string | null> {
+export function showPrompt(title: string, desc: string, inputType = 'text'): Promise<string | null> {
   return useModalStore
     .getState()
     .openModal({
@@ -129,5 +133,6 @@ export function showPrompt(title: string, desc: string): Promise<string | null> 
       desc,
       modalType: 'prompt',
       colorType: 'default',
+      inputType,
     }) as Promise<string | null>;
 }

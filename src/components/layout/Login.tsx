@@ -2,20 +2,23 @@ import { useState } from 'react';
 import { login } from '../../api/user';
 import { useNavigate } from 'react-router-dom';
 import { showModal } from '../../store/modalStore';
+import { useAuthStore } from '../../store/authStore';
 
 const Login = () => {
   const [LoginId, setLoginId] = useState('');
   const [Password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const nav = useNavigate();
-  const handleLogin = async (e: React.FormEvent) => {
+  const { setLoggedIn } = useAuthStore();
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const data = await login(LoginId, Password);
       localStorage.setItem('token', data.token);
-      // alert('로그인 성공!');
+      setLoggedIn(data.user);
       showModal('로그인 성공!', '로그인에 성공하였습니다!');
-      // window.location.href = '/';
       nav('/', { replace: true });
     } catch (error) {
       console.error('로그인 실패:', error);
@@ -66,7 +69,7 @@ const Login = () => {
             <p className="text-s">비밀번호</p>
             <div className="relative mb-3 w-full">
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="비밀번호를 입력하세요"
                 value={Password}
@@ -76,6 +79,7 @@ const Login = () => {
               <button
                 type="button"
                 aria-label="비밀번호 표시"
+                onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aac8c3] hover:text-[#00BBA7] transition-colors cursor-pointer bg-transparent border-0 p-0 flex items-center"
               >
                 <svg
@@ -97,8 +101,8 @@ const Login = () => {
                     x2="20"
                     y2="20"
                     strokeDasharray="24"
-                    strokeDashoffset="24"
-                    style={{ transition: 'stroke-dashoffset 0.2s' }}
+                    strokeDashoffset={showPassword ? 0 : 24}
+                    className="[transition:stroke-dashoffset_0.2s]"
                   />
                 </svg>
               </button>

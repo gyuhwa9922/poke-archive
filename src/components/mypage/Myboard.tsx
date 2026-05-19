@@ -1,37 +1,197 @@
-const Myboard = () => {
-  return (
-    <div className="overflow-hidden rounded-xl border border-[#00bba7]/20 bg-white w-full">
-      {/* 테이블 헤더 */}
-      <div className="grid grid-cols-[96px_minmax(0,1fr)_120px_80px_80px_80px] items-center gap-4 border-b border-[#00bba7]/15 bg-[#f4faf9] px-6 py-4 text-sm font-semibold text-[#4a7a72]">
-        <span>카테고리</span>
-        <span>제목</span>
-        <span>작성일</span>
-        <span className="text-center">조회</span>
-        <span className="text-center">좋아요</span>
-        <span className="text-center">댓글</span>
-      </div>
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getMyPosts } from '../../api/user';
+import { categoryColors, categoryMap, formatDate } from '../../utils/boardConstants';
+import type { Post } from '../../api/post';
 
-      {/* 게시글 행 */}
-      <button
-        type="button"
-        className="grid w-full grid-cols-[96px_minmax(0,1fr)_120px_80px_80px_80px] items-center gap-4 border-b border-[#00bba7]/10 px-6 py-4 text-left transition-colors hover:bg-[#f8fcfb] last:border-b-0"
-      >
-        <span className="inline-flex w-fit rounded-full px-3 py-1 text-xs font-medium text-[#00bba7] bg-[#e6f7f5]">
-          자유게시판
-        </span>
-        <span className="flex items-center gap-2 min-w-0">
-          <span className="truncate text-sm font-medium text-[#1a3a35]">
-            게시글 제목 예시입니다
-          </span>
-          <span className="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium text-gray-500 bg-gray-100">
-            임시저장
-          </span>
-        </span>
-        <span className="text-sm text-[#7a9b95]">2025.01.01</span>
-        <span className="text-center text-sm text-[#7a9b95]">123</span>
-        <span className="text-center text-sm text-[#7a9b95]">45</span>
-        <span className="text-center text-sm text-[#7a9b95]">6</span>
-      </button>
+const PAGE_SIZE = 5;
+
+const Myboard = () => {
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getMyPosts();
+        const sorted = [...data].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+        setPosts(sorted);
+      } catch (error) {
+        console.error('내 게시글 불러오기 실패', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const currentPosts = posts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const totalPages = Math.ceil(posts.length / PAGE_SIZE) || 1;
+  const startPage = Math.max(1, page - 1);
+  const endPage = Math.min(totalPages, page + 1);
+
+  return (
+    <div className="flex flex-col gap-4 flex-1">
+      {loading && (
+        <div className="flex items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-20 text-gray-400 shadow-sm">
+          <p className="text-lg font-medium">불러오는 중...</p>
+        </div>
+      )}
+
+      {!loading && posts.length === 0 && (
+        <div className="flex items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-white py-20 text-gray-400 shadow-sm">
+          <p className="text-lg font-medium">작성한 게시글이 없습니다.</p>
+        </div>
+      )}
+
+      {!loading &&
+        currentPosts.map((post) => {
+          const categoryLabel =
+            categoryMap[post.category as keyof typeof categoryMap] ?? post.category;
+          const colors = categoryColors[categoryLabel] ?? categoryColors['전체'];
+
+          return (
+            <button
+              key={post.postId}
+              type="button"
+              onClick={() => navigate(`/board/${post.postId}`)}
+              className="flex min-h-45 w-full shrink-0 cursor-pointer flex-col items-start gap-3 self-stretch rounded-2xl border border-[#00bba7]/15 bg-white p-6 text-left shadow-sm transition-all hover:shadow-md"
+            >
+              <div className="flex items-center gap-2">
+                <span
+                  className={`flex h-6 min-w-20 items-center justify-center rounded-md px-3 text-xs font-medium ${colors.text} ${colors.bg}`}
+                >
+                  {categoryLabel}
+                </span>
+                {post.isPublished === false && (
+                  <span className="flex h-6 items-center rounded-md px-2.5 text-xs font-medium text-gray-500 bg-gray-100">
+                    임시저장
+                  </span>
+                )}
+              </div>
+
+              <p className="text-[18px] font-normal leading-7 text-[#101828]">{post.title}</p>
+
+              <div className="flex items-center gap-3 text-sm font-normal leading-5 text-[#6A7282]">
+                <span>{post.nickname}</span>
+                <span>{formatDate(post.createdAt)}</span>
+              </div>
+
+              <div className="mt-3 flex w-full items-center gap-4 border-t border-[#F3F4F6] pt-3 text-xs text-[#6a7282]">
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M1.37468 8.232C1.31912 8.08232 1.31912 7.91767 1.37468 7.768C1.91581 6.4559 2.83435 5.33402 4.01386 4.5446C5.19336 3.75517 6.58071 3.33374 8.00001 3.33374C9.41932 3.33374 10.8067 3.75517 11.9862 4.5446C13.1657 5.33402 14.0842 6.4559 14.6253 7.768C14.6809 7.91767 14.6809 8.08232 14.6253 8.232C14.0842 9.54409 13.1657 10.666 11.9862 11.4554C10.8067 12.2448 9.41932 12.6663 8.00001 12.6663C6.58071 12.6663 5.19336 12.2448 4.01386 11.4554C2.83435 10.666 1.91581 9.54409 1.37468 8.232Z"
+                      strokeWidth="1.33333"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <circle
+                      cx="8"
+                      cy="8"
+                      r="2"
+                      strokeWidth="1.33333"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {post.viewCount}
+                </span>
+
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 15 14"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M12.0001 8.00008C12.9934 7.02675 14.0001 5.86008 14.0001 4.33341C14.0001 3.36095 13.6138 2.42832 12.9261 1.74069C12.2385 1.05306 11.3059 0.666748 10.3334 0.666748C9.16008 0.666748 8.33341 1.00008 7.33341 2.00008C6.33341 1.00008 5.50675 0.666748 4.33341 0.666748C3.36095 0.666748 2.42832 1.05306 1.74069 1.74069C1.05306 2.42832 0.666748 3.36095 0.666748 4.33341C0.666748 5.86675 1.66675 7.03341 2.66675 8.00008L7.33341 12.6667L12.0001 8.00008Z"
+                      strokeWidth="1.33333"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {post.favoriteCount}
+                </span>
+
+                <span className="flex items-center gap-1">
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 14 14"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      d="M4.60008 12.0053C5.87247 12.658 7.33614 12.8348 8.72734 12.5038C10.1185 12.1729 11.3458 11.3559 12.1879 10.2001C13.0301 9.04434 13.4317 7.62579 13.3205 6.2001C13.2092 4.7744 12.5925 3.4353 11.5813 2.42412C10.5701 1.41293 9.23101 0.796155 7.80531 0.684932C6.37961 0.573708 4.96106 0.975352 3.80529 1.81749C2.64953 2.65962 1.83254 3.88686 1.50156 5.27806C1.17058 6.66926 1.34738 8.13294 2.00008 9.40532L0.666748 13.3387L4.60008 12.0053Z"
+                      strokeWidth="1.33333"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  {post.commentCount}
+                </span>
+              </div>
+            </button>
+          );
+        })}
+
+      {!loading && posts.length > PAGE_SIZE && (
+        <div className="flex items-center justify-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => setPage((prev) => Math.max(1, prev - 1))}
+            disabled={page === 1}
+            className={`rounded-lg border px-4 py-2 text-sm transition-all ${
+              page === 1
+                ? 'cursor-not-allowed border-gray-200 text-gray-300'
+                : 'border-[#00bba7]/30 text-[#4a7a72] hover:bg-[#e6f7f5]'
+            }`}
+          >
+            이전
+          </button>
+
+          {Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+            const pageNum = startPage + i;
+            return (
+              <button
+                key={pageNum}
+                type="button"
+                onClick={() => setPage(pageNum)}
+                className={`h-10 w-10 rounded-lg text-sm transition-all ${
+                  page === pageNum
+                    ? 'bg-[#05B29F] font-medium text-white'
+                    : 'border border-[#00bba7]/30 text-[#4a7a72] hover:bg-[#e6f7f5]'
+                }`}
+              >
+                {pageNum}
+              </button>
+            );
+          })}
+
+          <button
+            type="button"
+            onClick={() => setPage((prev) => Math.min(totalPages, prev + 1))}
+            disabled={page === totalPages}
+            className={`rounded-lg border px-4 py-2 text-sm transition-all ${
+              page === totalPages
+                ? 'cursor-not-allowed border-gray-200 text-gray-300'
+                : 'border-[#00bba7]/30 text-[#4a7a72] hover:bg-[#e6f7f5]'
+            }`}
+          >
+            다음
+          </button>
+        </div>
+      )}
     </div>
   );
 };
