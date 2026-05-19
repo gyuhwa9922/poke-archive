@@ -70,7 +70,7 @@ const Mypage = () => {
         localStorage.removeItem('token');
         setLoggedOut();
         await showModal('탈퇴 완료', '회원 탈퇴가 완료되었습니다.');
-        nav('/login', { replace: true });
+        nav('/', { replace: true });
       } catch {
         showModal('오류', '비밀번호가 올바르지 않습니다.\n다시 시도해 주세요.', 'danger');
       }

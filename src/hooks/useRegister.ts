@@ -131,8 +131,7 @@ export function useRegister() {
 
   // Function to go to the login page
   const handleLoginRedirect = () => {
-    // window.location.href = '/login';
-    nav('login', { replace: true });
+    nav('/login', { replace: true });
   };
 
   // Return the state and functions to be returned from the hook in object form.

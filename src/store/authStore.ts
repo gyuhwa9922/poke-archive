@@ -5,6 +5,7 @@ interface AuthState {
   isLoggedIn: boolean;
   user: User | null;
   checkAuth: () => Promise<void>;
+  setLoggedIn: (user: User) => void;
   setLoggedOut: () => void;
 }
 
@@ -26,5 +27,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
+  setLoggedIn: (user: User) => set({ isLoggedIn: true, user }),
   setLoggedOut: () => set({ isLoggedIn: false, user: null }),
 }));

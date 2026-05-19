@@ -99,7 +99,7 @@ export async function updateMe(nickname: string, introduce: string) {
 
 // DELETE USER
 export async function withdraw(password: string) {
-  const { data } = await instance.post('/user/withdraw', { password });
+  const { data } = await instance.post('/user/me/withdraw', { password });
   return data;
 }
 
