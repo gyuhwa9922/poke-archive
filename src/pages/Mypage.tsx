@@ -11,6 +11,7 @@ const Mypage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [postCount, setPostCount] = useState(0);
   const [catchCount, setCatchCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +27,7 @@ const Mypage = () => {
     };
 
     fetchData();
-  }, []);
+  }, [refreshKey]);
 
   return (
     <div className="flex justify-center w-full h-250">
@@ -43,7 +44,12 @@ const Mypage = () => {
           <CategoryFilter selected={selected} onSelect={setSelected} />
 
           {selected === '내 정보' && user && (
-            <Myinfo user={user} postCount={postCount} catchCount={catchCount} />
+            <Myinfo
+              user={user}
+              postCount={postCount}
+              catchCount={catchCount}
+              onUpdate={() => setRefreshKey((k) => k + 1)}
+            />
           )}
           {selected === '작성 게시글' && <Myboard />}
           {selected === '내가 지닌 포켓몬' && <MyPokemons />}
