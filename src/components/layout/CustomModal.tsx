@@ -8,6 +8,7 @@ const CustomModal = () => {
     desc,
     modalType,
     colorType,
+    inputType,
     inputValue,
     confirmModal,
     cancelModal,
@@ -71,7 +72,7 @@ const CustomModal = () => {
         {modalType === 'prompt' && (
           <input
             ref={inputRef}
-            type="text"
+            type={inputType}
             maxLength={20}
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
