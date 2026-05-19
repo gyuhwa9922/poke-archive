@@ -107,7 +107,7 @@ export async function withdraw(password: string) {
 
 // GET MY POSTS
 export async function getMyPosts(): Promise<Post[]> {
-  const { data } = await instance.get<ApiResponse<unknown>>('/user/me/posts');
+  const { data } = await instance.get<ApiResponse<unknown>>('/posts/my');
   const raw = data?.data as { posts?: Post[] } | Post[] | undefined;
   const posts = Array.isArray(raw) ? raw : (raw?.posts ?? []);
   return posts;
@@ -118,4 +118,3 @@ export async function getMyPocketmons(): Promise<number[]> {
   const { data } = await instance.get<ApiResponse<{ myPocketmons: number[] }>>('/pocketmons');
   return data?.data?.myPocketmons ?? [];
 }
-
