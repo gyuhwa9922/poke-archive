@@ -9,6 +9,7 @@ export interface Post {
   favoriteCount: number;
   commentCount: number;
   category: string;
+  isPublished?: boolean;
 }
 
 export interface PostPresetPayload {

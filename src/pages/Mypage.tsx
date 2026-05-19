@@ -30,7 +30,7 @@ const Mypage = () => {
   }, [refreshKey]);
 
   return (
-    <div className="flex justify-center w-full h-250">
+    <div className="flex justify-center w-full min-h-250 h-auto">
       <div className="w-full max-w-360 m-12 gap-3">
         {/* 페이지 타이틀 */}
         <div className="flex flex-col text-left">
