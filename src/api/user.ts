@@ -1,4 +1,5 @@
 import instance, { publicInstance } from './axios';
+import type { Post } from './post';
 
 // –– Type Definitions –––––––––––––––––––––––––––
 // API response type definition
@@ -100,5 +101,21 @@ export async function updateMe(nickname: string, introduce: string) {
 export async function withdraw(password: string) {
   const { data } = await instance.post('/user/withdraw', { password });
   return data;
+}
+
+// –– Mypage API ––––––––––––––––––––––––––––––––––
+
+// GET MY POSTS
+export async function getMyPosts(): Promise<Post[]> {
+  const { data } = await instance.get<ApiResponse<unknown>>('/user/me/posts');
+  const raw = data?.data as { posts?: Post[] } | Post[] | undefined;
+  const posts = Array.isArray(raw) ? raw : (raw?.posts ?? []);
+  return posts;
+}
+
+// GET MY POCKETMONS
+export async function getMyPocketmons(): Promise<number[]> {
+  const { data } = await instance.get<ApiResponse<{ myPocketmons: number[] }>>('/pocketmons');
+  return data?.data?.myPocketmons ?? [];
 }
 

@@ -1,11 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CategoryFilter from '../components/mypage/CategoryFilter';
 import Myinfo from '../components/mypage/Myinfo';
 import Myboard from '../components/mypage/Myboard';
 import MyPokemons from '../components/mypage/MyPokemons';
+import { getMe, getMyPosts, getMyPocketmons } from '../api/user';
+import type { User } from '../api/user';
 
 const Mypage = () => {
   const [selected, setSelected] = useState('내 정보');
+  const [user, setUser] = useState<User | null>(null);
+  const [postCount, setPostCount] = useState(0);
+  const [catchCount, setCatchCount] = useState(0);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const [userResult, postsResult, catchResult] = await Promise.allSettled([
+        getMe(),
+        getMyPosts(),
+        getMyPocketmons(),
+      ]);
+
+      if (userResult.status === 'fulfilled') setUser(userResult.value);
+      if (postsResult.status === 'fulfilled') setPostCount(postsResult.value.length);
+      if (catchResult.status === 'fulfilled') setCatchCount(catchResult.value.length);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="flex justify-center w-full h-250">
@@ -19,16 +40,10 @@ const Mypage = () => {
         </div>
 
         <section className="flex gap-6 w-full items-start max-[1025px]:flex-col max-[1025px]:items-stretch mt-6">
-          {/* 왼쪽 그리드: 내정보, 내 게시글, 보유 포켓몬, 로그아웃, 회원탈퇴 카테고리 */}
           <CategoryFilter selected={selected} onSelect={setSelected} />
 
-          {/* 오른쪽 그리드: 선택된 카테고리에 따른 상세 정보 영역 */}
-          {selected === '내 정보' && (
-            <Myinfo
-              user={{ nickname: 'test', loginId: 'test', introduce: '테스트 계정입니다' }}
-              postCount={1}
-              catchCount={44}
-            />
+          {selected === '내 정보' && user && (
+            <Myinfo user={user} postCount={postCount} catchCount={catchCount} />
           )}
           {selected === '작성 게시글' && <Myboard />}
           {selected === '내가 지닌 포켓몬' && <MyPokemons />}

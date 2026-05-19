@@ -1,8 +1,4 @@
-interface User {
-  nickname: string;
-  loginId: string;
-  introduce: string;
-}
+import type { User } from '../../api/user';
 
 interface MyinfoProps {
   user: User;
