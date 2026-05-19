@@ -11,12 +11,24 @@ import { useModalStore, showModal, showPrompt } from '../store/modalStore';
 
 const Mypage = () => {
   const nav = useNavigate();
-  const { setLoggedOut } = useAuthStore();
+  const { isLoggedIn, checkAuth, setLoggedOut } = useAuthStore();
+  const [authChecked, setAuthChecked] = useState(false);
   const [selected, setSelected] = useState('내 정보');
   const [user, setUser] = useState<User | null>(null);
   const [postCount, setPostCount] = useState(0);
   const [catchCount, setCatchCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    checkAuth().finally(() => setAuthChecked(true));
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (authChecked && !isLoggedIn) {
+      showModal('비로그인 상태', '마이페이지는 로그인 후 이용 가능합니다.');
+      nav('/login');
+    }
+  }, [authChecked, isLoggedIn, nav]);
 
   useEffect(() => {
     const fetchData = async () => {
